@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filename Formatter</title>
+    <style>
+        body {
+            background-color: black; /* Set the background color to black */
+            color: white; /* White text */
+            font-family: Arial, sans-serif; /* Font family */
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333; /* Dark gray container background */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1); /* Soft white shadow */
+        }
+        #filename {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #666; /* Dark gray border */
+            border-radius: 4px;
+            background-color: #444; /* Dark gray input background */
+            color: white; /* White text inside input */
+            box-sizing: border-box; /* Ensure padding and border are included in width */
+        }
+        #result {
+            margin-top: 10px;
+            font-size: 18px;
+            cursor: pointer; /* Change cursor to pointer on hover */
+            user-select: all; /* Allow text selection */
+        }
+        @keyframes shake {
+            10%, 90% {
+                transform: translate3d(-2px, 0, 0);
+            }
+            
+            20%, 80% {
+                transform: translate3d(4px, 0, 0);
+            }
+
+            30%, 50%, 70% {
+                transform: translate3d(-6px, 0, 0);
+            }
+
+            40%, 60% {
+                transform: translate3d(6px, 0, 0);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+    </style>
+    <script>
+        function formatFilename() {
+            // Get the input value
+            const input = document.getElementById('filename').value;
+
+            // Define the file extensions to check for removal
+            const extensionsToRemove = ['.jpg', '.png', '.tga', '.bmp'];
+
+            // Remove underscores and remove extension if it matches one of the defined extensions
+            let formattedFilename = input.replace(/_/g, ' ');
+
+            extensionsToRemove.forEach(ext => {
+                if (formattedFilename.toLowerCase().endsWith(ext)) {
+                    formattedFilename = formattedFilename.slice(0, formattedFilename.toLowerCase().lastIndexOf(ext));
+                }
+            });
+
+            // Display the result
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = formattedFilename;
+
+            // Add click event to copy text to clipboard and apply shake animation
+            resultElement.onclick = function() {
+                const textarea = document.createElement('textarea');
+                textarea.value = formattedFilename;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                // Apply shake animation
+                resultElement.classList.add('shake');
+                setTimeout(() => {
+                    resultElement.classList.remove('shake');
+                }, 500); // Remove shake class after 0.5 seconds
+            };
+        }
+
+        // Function to update automatically as you type
+        function updateFormattedFilename() {
+            formatFilename();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Filename Formatter</h1>
+        <form>
+            <label for="filename">Enter filename:</label>
+            <input type="text" id="filename" name="filename" oninput="updateFormattedFilename()">
+        </form>
+        <h2>Formatted Filename (Click to Copy):</h2>
+        <p id="result"></p>
+    </div>
+</body>
+</html>
